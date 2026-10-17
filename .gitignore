@@ -1,0 +1,36 @@
+# Node Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Production Builds
+client/dist/
+dist/
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+client/.env
+server/.env
+*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Server uploads directory (keep directory with .gitkeep)
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Reference design archive
+apple_ui_ref/
+
+# OS / Editor Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
