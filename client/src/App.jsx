@@ -5,6 +5,8 @@ import Dashboard from './components/Dashboard';
 import Datasets from './components/Datasets';
 import Analytics from './components/Analytics';
 import Geospatial from './components/Geospatial';
+import CorrelationExplorer from './components/CorrelationExplorer';
+import Workspaces from './components/Workspaces';
 import UploadModal from './components/UploadModal';
 import AuthPage from './pages/AuthPage';
 import { MapPin, User, Settings, ShieldCheck, Mail, Key } from 'lucide-react';
@@ -68,6 +70,7 @@ export function App() {
 function MainLayout() {
   const { user, loading } = useAuth();
   const [activePage, setActivePage] = useState('dashboard');
+  const [selectedDatasetForCorrelation, setSelectedDatasetForCorrelation] = useState(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
 
   if (loading) {
@@ -82,16 +85,41 @@ function MainLayout() {
     return <AuthPage />;
   }
 
+  const handleOpenCorrelationForDataset = (datasetId) => {
+    setSelectedDatasetForCorrelation(datasetId);
+    setActivePage('correlation');
+  };
+
   const renderPage = () => {
     switch (activePage) {
       case 'dashboard':
         return <Dashboard onNavigate={setActivePage} onUploadClick={() => setIsUploadOpen(true)} />;
       case 'datasets':
-        return <Datasets onNavigate={setActivePage} onUploadClick={() => setIsUploadOpen(true)} />;
+        return (
+          <Datasets
+            onNavigate={setActivePage}
+            onUploadClick={() => setIsUploadOpen(true)}
+            onExploreCorrelation={handleOpenCorrelationForDataset}
+          />
+        );
       case 'analytics':
-        return <Analytics />;
+        return <Analytics onExploreCorrelation={handleOpenCorrelationForDataset} />;
       case 'geospatial':
         return <Geospatial onUploadClick={() => setIsUploadOpen(true)} />;
+      case 'correlation':
+        return (
+          <CorrelationExplorer
+            initialDatasetId={selectedDatasetForCorrelation}
+            onNavigate={setActivePage}
+          />
+        );
+      case 'workspaces':
+        return (
+          <Workspaces
+            onNavigate={setActivePage}
+            onSelectDatasetForCorrelation={handleOpenCorrelationForDataset}
+          />
+        );
       case 'profile':
         return <ProfilePage />;
       default:

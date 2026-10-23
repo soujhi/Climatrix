@@ -12,7 +12,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
-import { ChevronDown, Map, BarChart2, MapPin, SlidersHorizontal, RotateCcw, Download } from 'lucide-react';
+import { ChevronDown, Map, BarChart2, MapPin, SlidersHorizontal, RotateCcw, Download, GitCompare } from 'lucide-react';
 
 function StatCard({ label, value, unit, sub }) {
   return (
@@ -34,7 +34,7 @@ function StatCard({ label, value, unit, sub }) {
   );
 }
 
-export default function Analytics() {
+export default function Analytics({ onExploreCorrelation }) {
   const [datasets, setDatasets] = useState([]);
   const [selectedDatasetId, setSelectedDatasetId] = useState('');
   const [selectedDataset, setSelectedDataset] = useState(null);
@@ -227,30 +227,46 @@ export default function Analytics() {
             </button>
           )}
 
-          {/* Download CSV button */}
-          <button
-            onClick={async () => {
-              if (!selectedDatasetId) return;
-              try {
-                const res = await api.get(`/datasets/${selectedDatasetId}/download`, { responseType: 'blob' });
-                const url = window.URL.createObjectURL(new Blob([res.data], { type: 'text/csv' }));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', `${(selectedDataset?.name || 'dataset').replace(/[^a-zA-Z0-9_-]/g, '_')}.csv`);
-                document.body.appendChild(link);
-                link.click();
-                link.parentNode.removeChild(link);
-              } catch (err) {
-                alert('Failed to download CSV');
-              }
-            }}
-            className="flex items-center gap-1.5 px-3.5 py-2 mt-auto ml-auto text-xs font-medium rounded-xl border bg-white transition-colors hover:bg-slate-50 shadow-xs"
-            style={{ borderColor: '#E4E2DC', color: '#156272', fontFamily: "'DM Sans', sans-serif" }}
-            title="Download CSV for this dataset"
-          >
-            <Download size={13} />
-            <span>Download CSV</span>
-          </button>
+          {/* Actions: Correlation & Download */}
+          <div className="flex items-center gap-2 mt-auto ml-auto">
+            <button
+              onClick={() => {
+                if (onExploreCorrelation && selectedDatasetId) {
+                  onExploreCorrelation(selectedDatasetId);
+                }
+              }}
+              className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl text-white shadow-xs transition-opacity hover:opacity-90"
+              style={{ backgroundColor: '#156272', fontFamily: "'DM Sans', sans-serif" }}
+              title="Explore bivariate correlation for this dataset"
+            >
+              <GitCompare size={13} />
+              <span>Explore Correlation</span>
+            </button>
+
+            <button
+              onClick={async () => {
+                if (!selectedDatasetId) return;
+                try {
+                  const res = await api.get(`/datasets/${selectedDatasetId}/download`, { responseType: 'blob' });
+                  const url = window.URL.createObjectURL(new Blob([res.data], { type: 'text/csv' }));
+                  const link = document.createElement('a');
+                  link.href = url;
+                  link.setAttribute('download', `${(selectedDataset?.name || 'dataset').replace(/[^a-zA-Z0-9_-]/g, '_')}.csv`);
+                  document.body.appendChild(link);
+                  link.click();
+                  link.parentNode.removeChild(link);
+                } catch (err) {
+                  alert('Failed to download CSV');
+                }
+              }}
+              className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-xl border bg-white transition-colors hover:bg-slate-50 shadow-xs"
+              style={{ borderColor: '#E4E2DC', color: '#156272', fontFamily: "'DM Sans', sans-serif" }}
+              title="Download CSV for this dataset"
+            >
+              <Download size={13} />
+              <span>Download CSV</span>
+            </button>
+          </div>
         </div>
       )}
 

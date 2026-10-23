@@ -4,6 +4,8 @@ import {
   Database,
   BarChart2,
   MapPin,
+  GitCompare,
+  Layers,
   User,
   Settings,
   CloudRain,
@@ -20,6 +22,8 @@ export default function Sidebar({ activePage, onNavigate, onUploadClick }) {
     { id: 'datasets', label: 'Datasets', icon: Database },
     { id: 'analytics', label: 'Analytics', icon: BarChart2 },
     { id: 'geospatial', label: 'Geospatial', icon: MapPin },
+    { id: 'correlation', label: 'Correlation', icon: GitCompare },
+    { id: 'workspaces', label: 'Workspaces', icon: Layers },
   ];
 
   const bottomItems = [

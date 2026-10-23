@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
-import { Search, SlidersHorizontal, Plus, ChevronDown, X, Trash2, Eye, Edit3, BarChart2, Download } from 'lucide-react';
+import { Search, SlidersHorizontal, Plus, ChevronDown, X, Trash2, Eye, Edit3, BarChart2, Download, GitCompare } from 'lucide-react';
 
-export default function Datasets({ onNavigate, onUploadClick }) {
+export default function Datasets({ onNavigate, onUploadClick, onExploreCorrelation }) {
   const [datasets, setDatasets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -247,6 +247,19 @@ export default function Datasets({ onNavigate, onUploadClick }) {
                       <Eye size={14} />
                     </button>
                     <button
+                      onClick={() => {
+                        if (onExploreCorrelation) {
+                          onExploreCorrelation(ds._id);
+                        } else {
+                          onNavigate('correlation');
+                        }
+                      }}
+                      className="p-1.5 rounded-lg border hover:bg-teal-50 text-teal-700 transition-colors"
+                      title="Explore Relationship (Correlation)"
+                    >
+                      <GitCompare size={14} />
+                    </button>
+                    <button
                       onClick={() => handleDownload(ds)}
                       className="p-1.5 rounded-lg border hover:bg-slate-100 text-slate-600 transition-colors"
                       title="Download CSV"
@@ -313,18 +326,36 @@ export default function Datasets({ onNavigate, onUploadClick }) {
               </div>
             </div>
             <div className="p-4 border-t bg-slate-50 flex items-center justify-between" style={{ borderColor: '#F0EEE9' }}>
-              <button
-                onClick={() => handleDownload(selectedDataset)}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium border bg-white text-slate-700 hover:bg-slate-100 transition-colors shadow-xs"
-                style={{ borderColor: '#E4E2DC' }}
-              >
-                <Download size={13} style={{ color: '#156272' }} />
-                <span>Download CSV</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleDownload(selectedDataset)}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium border bg-white text-slate-700 hover:bg-slate-100 transition-colors shadow-xs"
+                  style={{ borderColor: '#E4E2DC' }}
+                >
+                  <Download size={13} style={{ color: '#156272' }} />
+                  <span>Download CSV</span>
+                </button>
+                <button
+                  onClick={() => {
+                    const id = selectedDataset._id;
+                    setSelectedDataset(null);
+                    if (onExploreCorrelation) {
+                      onExploreCorrelation(id);
+                    } else {
+                      onNavigate('correlation');
+                    }
+                  }}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-white transition-opacity hover:opacity-90 shadow-xs"
+                  style={{ backgroundColor: '#156272' }}
+                >
+                  <GitCompare size={13} />
+                  <span>Explore Relationship</span>
+                </button>
+              </div>
               <button
                 onClick={() => setSelectedDataset(null)}
-                className="px-4 py-2 rounded-xl text-xs font-medium text-white transition-opacity hover:opacity-90"
-                style={{ backgroundColor: '#156272' }}
+                className="px-4 py-2 rounded-xl text-xs font-medium border text-slate-700 hover:bg-slate-100"
+                style={{ borderColor: '#E4E2DC' }}
               >
                 Close Preview
               </button>
