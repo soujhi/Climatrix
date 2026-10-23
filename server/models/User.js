@@ -46,6 +46,23 @@ class UserModelMock {
     };
   }
 
+  static find(query = {}) {
+    let users = Array.from(localUserStore.values()).map((u) => ({
+      _id: u._id,
+      name: u.name,
+      email: u.email,
+      role: u.role,
+      createdAt: u.createdAt,
+    }));
+    return {
+      select: (fields) => ({
+        limit: (n) => users.slice(0, n),
+        sort: () => users,
+      }),
+      limit: (n) => users.slice(0, n),
+    };
+  }
+
   static async create({ name, email, password, role }) {
     const id = 'usr_' + Date.now() + Math.random().toString(36).substring(2, 7);
     const newUser = {

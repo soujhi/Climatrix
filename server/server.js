@@ -7,6 +7,8 @@ import { fileURLToPath } from 'url';
 import { connectDB } from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import datasetRoutes from './routes/datasetRoutes.js';
+import analysisRoutes from './routes/analysisRoutes.js';
+import workspaceRoutes from './routes/workspaceRoutes.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -31,6 +33,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Core REST API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/datasets', datasetRoutes);
+app.use('/api/analyses', analysisRoutes);
+app.use('/api/workspaces', workspaceRoutes);
 
 // Healthcheck Route
 app.get('/api/health', (req, res) => {
