@@ -9,6 +9,7 @@ import {
   getDatasetChartData,
   getDatasetGeoJSON,
   downloadDatasetCSV,
+  downloadSampleCSV,
 } from '../controllers/datasetController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { upload } from '../middleware/uploadMiddleware.js';
@@ -20,7 +21,10 @@ const router = express.Router();
  * Defines REST endpoints for CSV dataset CRUD, analytics, charts, and GeoJSON heatmaps.
  */
 
-// All dataset routes are protected by JWT authentication
+// Public endpoint to download sample CSV dataset for viva live upload demonstration
+router.get('/sample/download', downloadSampleCSV);
+
+// All other dataset routes are protected by JWT authentication
 router.use(protect);
 
 // Upload dataset (POST /api/datasets)

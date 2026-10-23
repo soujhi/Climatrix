@@ -417,3 +417,21 @@ export const downloadDatasetCSV = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// @desc    Download sample CSV dataset for immediate live demonstration
+// @route   GET /api/datasets/sample/download
+// @access  Public
+export const downloadSampleCSV = async (req, res) => {
+  try {
+    const csvPath = './sample_data/india_climate_dataset_2026.csv';
+    if (fs.existsSync(csvPath)) {
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="climatrix_india_climate_sample.csv"');
+      return fs.createReadStream(csvPath).pipe(res);
+    }
+    return res.status(404).json({ success: false, message: 'Sample dataset file not found' });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+

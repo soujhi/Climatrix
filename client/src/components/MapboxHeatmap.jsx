@@ -10,7 +10,6 @@ import {
   Info,
   X,
   ChevronRight,
-  HelpCircle,
   Flame,
   CheckCircle2,
   Navigation,
@@ -19,10 +18,10 @@ import {
 /**
  * MAPBOX HEATMAP & GEOGRAPHIC VISUALIZATION COMPONENT
  * Features:
- * 1. Plain-English viva defense cheat sheet (explains colors, stations, values).
- * 2. Interactive HTML station badges with city names and exact values directly on the map.
- * 3. Quick Station Jump Bar (1-click flyTo for any city).
- * 4. 3 View Modes: "All-in-One (Badges + Heatmap)", "Pins & Values Only (Simplest)", "Heatmap Glow Only".
+ * 1. Interactive HTML station badges with city names and exact values directly on the map.
+ * 2. Quick Station Jump Bar (1-click flyTo for any city).
+ * 3. 3 View Modes: "All-in-One (Badges + Heatmap)", "Pins & Values Only (Simplest)", "Heatmap Glow Only".
+ * 4. Cooperative gestures enabled with scrollZoom disabled by default so mouse wheel scrolls the page smoothly.
  * 5. Detailed inspection card on click.
  */
 export const MapboxHeatmap = ({
@@ -38,7 +37,6 @@ export const MapboxHeatmap = ({
   const [selectedPoint, setSelectedPoint] = useState(null);
   const [currentStyle, setCurrentStyle] = useState('mapbox://styles/mapbox/light-v11');
   const [viewMode, setViewMode] = useState('both'); // 'both', 'pins', 'heatmap'
-  const [showVivaGuide, setShowVivaGuide] = useState(true);
   const [mapError, setMapError] = useState(null);
 
   const mapboxToken = import.meta.env.VITE_MAPBOX_TOKEN || '';
@@ -295,8 +293,12 @@ export const MapboxHeatmap = ({
           center: center,
           zoom: 4.2,
           attributionControl: true,
+          // Enables natural page wheel scrolling without map capturing the scroll
+          cooperativeGestures: true,
+          scrollZoom: false,
         });
 
+        // Add standard zoom & rotation controls
         mapInstance.addControl(new mapboxgl.NavigationControl({ visualizePitch: false }), 'top-right');
         mapInstance.addControl(new mapboxgl.FullscreenControl(), 'top-right');
 
@@ -424,66 +426,6 @@ export const MapboxHeatmap = ({
 
   return (
     <div className="space-y-4">
-      {/* 1-Minute Viva Defense Cheat Sheet */}
-      <div
-        className="rounded-2xl border p-4 shadow-xs transition-all"
-        style={{ backgroundColor: '#F9FBFB', borderColor: '#C8E1E6' }}
-      >
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <span
-              className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wide uppercase"
-              style={{ backgroundColor: '#156272', color: '#FFFFFF' }}
-            >
-              Viva Presentation Guide
-            </span>
-            <h4 className="font-semibold text-xs text-slate-900" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-              How to Explain This Map to Your Examiners in 3 Simple Points
-            </h4>
-          </div>
-          <button
-            onClick={() => setShowVivaGuide(!showVivaGuide)}
-            className="text-xs text-teal-800 font-medium hover:underline"
-          >
-            {showVivaGuide ? 'Hide Guide' : 'Show Guide'}
-          </button>
-        </div>
-
-        {showVivaGuide && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs text-slate-700 border-t border-teal-100">
-            <div className="p-2.5 rounded-xl bg-white border border-teal-100/80 space-y-1">
-              <p className="font-semibold text-teal-900 flex items-center gap-1.5">
-                <span className="w-4 h-4 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-[10px] font-bold">1</span>
-                What It Represents
-              </p>
-              <p className="text-[11px] text-slate-600 leading-relaxed">
-                "Each station badge on the map marks an active weather monitoring station across India with its exact recorded reading."
-              </p>
-            </div>
-
-            <div className="p-2.5 rounded-xl bg-white border border-teal-100/80 space-y-1">
-              <p className="font-semibold text-teal-900 flex items-center gap-1.5">
-                <span className="w-4 h-4 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-[10px] font-bold">2</span>
-                What Colors Mean
-              </p>
-              <p className="text-[11px] text-slate-600 leading-relaxed">
-                "Red and orange regions show high values (e.g. heat peaks), while blue and cyan regions represent cooler or lower intensity areas."
-              </p>
-            </div>
-
-            <div className="p-2.5 rounded-xl bg-white border border-teal-100/80 space-y-1">
-              <p className="font-semibold text-teal-900 flex items-center gap-1.5">
-                <span className="w-4 h-4 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-[10px] font-bold">3</span>
-                Interactive Inspection
-              </p>
-              <p className="text-[11px] text-slate-600 leading-relaxed">
-                "Examiners can click any city pill below or click a station badge on the map to inspect all 4 weather parameters simultaneously."
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
-
       {/* Quick Station Jump Bar */}
       {uniqueStations.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 text-xs">

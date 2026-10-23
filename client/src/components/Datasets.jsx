@@ -103,11 +103,11 @@ export default function Datasets({ onNavigate, onUploadClick, onExploreCorrelati
           <a
             href="/india_climate_dataset_2026.csv"
             download="india_climate_dataset_2026.csv"
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border bg-white shadow-xs transition-colors hover:bg-slate-50"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border bg-white shadow-xs transition-colors hover:bg-slate-50"
             style={{ borderColor: '#E4E2DC', color: '#156272', fontFamily: "'DM Sans', sans-serif" }}
           >
             <Download size={15} />
-            <span>Download India CSV</span>
+            <span>Download Sample CSV (For Demo)</span>
           </a>
           <button
             onClick={onUploadClick}
@@ -119,6 +119,16 @@ export default function Datasets({ onNavigate, onUploadClick, onExploreCorrelati
             <Plus size={16} strokeWidth={2.2} />
             Upload Dataset
           </button>
+        </div>
+      </div>
+
+      {/* Demo Workflow Helper */}
+      <div className="flex items-center justify-between p-3.5 mb-6 rounded-xl border bg-emerald-50/50 border-emerald-200 text-xs text-emerald-900 shadow-2xs">
+        <div className="flex items-center gap-2">
+          <Download size={15} className="text-emerald-700 shrink-0" />
+          <span>
+            <strong>Live Demo:</strong> Click <strong>Download Sample CSV (For Demo)</strong> to download the benchmark dataset, then click <strong>Upload Dataset</strong> to demonstrate CSV parsing and instant analytics to your examiners.
+          </span>
         </div>
       </div>
 

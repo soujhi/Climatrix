@@ -772,57 +772,7 @@ export default function CorrelationExplorer({ initialDatasetId = null, onNavigat
             </div>
           </div>
 
-          {/* 3. VIVA DEFENSE CHEAT SHEET */}
-          <div
-            className="rounded-2xl p-5 border shadow-xs space-y-3"
-            style={{ backgroundColor: '#FAF9F6', borderColor: '#E8E5DF' }}
-          >
-            <div className="flex items-center gap-2">
-              <span
-                className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wide uppercase"
-                style={{ backgroundColor: '#156272', color: '#FFFFFF' }}
-              >
-                Viva Cheat Sheet
-              </span>
-              <h4 className="font-semibold text-xs text-slate-900" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                3 Talking Points to Speak in Front of Examiners
-              </h4>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-700 pt-1">
-              <div className="p-3 rounded-xl bg-white border space-y-1 shadow-2xs" style={{ borderColor: '#E4E2DC' }}>
-                <p className="font-semibold text-slate-900 flex items-center gap-1.5">
-                  <span className="w-4 h-4 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-[10px] font-bold">1</span>
-                  Objective
-                </p>
-                <p className="text-[11px] text-slate-600 leading-relaxed">
-                  "We compared {analysisResult.sourceA.field.toUpperCase()} with {analysisResult.sourceB.field.toUpperCase()} across {analysisResult.sampleCount} clean, matched daily observations."
-                </p>
-              </div>
-
-              <div className="p-3 rounded-xl bg-white border space-y-1 shadow-2xs" style={{ borderColor: '#E4E2DC' }}>
-                <p className="font-semibold text-slate-900 flex items-center gap-1.5">
-                  <span className="w-4 h-4 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-[10px] font-bold">2</span>
-                  The Metric Result
-                </p>
-                <p className="text-[11px] text-slate-600 leading-relaxed">
-                  "We obtained Pearson r = {analysisResult.coefficient}. Because this value is {analysisResult.direction.toLowerCase()} and {analysisResult.strengthBand}, it proves that as {analysisResult.sourceA.field} rises, {analysisResult.sourceB.field} reliably decreases."
-                </p>
-              </div>
-
-              <div className="p-3 rounded-xl bg-white border space-y-1 shadow-2xs" style={{ borderColor: '#E4E2DC' }}>
-                <p className="font-semibold text-slate-900 flex items-center gap-1.5">
-                  <span className="w-4 h-4 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-[10px] font-bold">3</span>
-                  Examiner Caveat
-                </p>
-                <p className="text-[11px] text-slate-600 leading-relaxed">
-                  "If the examiner asks if rain directly causes temperature drops: correlation proves association, not causation; solar shielding by cloud cover drives the mechanism."
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* 4. MULTI-VIEW CHART SECTION */}
+          {/* MULTI-VIEW CHART SECTION */}
           <div
             className="bg-white rounded-2xl p-6 border shadow-xs space-y-4"
             style={{ borderColor: '#E4E2DC' }}

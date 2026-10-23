@@ -93,16 +93,26 @@ export default function Dashboard({ onNavigate, onUploadClick }) {
             {now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
-        <button
-          onClick={onUploadClick}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 shadow-sm"
-          style={{ backgroundColor: '#156272', color: '#fff', fontFamily: "'DM Sans', sans-serif" }}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#1A7D8A'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#156272'; }}
-        >
-          <Plus size={16} strokeWidth={2.2} />
-          Upload Dataset
-        </button>
+        <div className="flex items-center gap-3">
+          <a
+            href="/india_climate_dataset_2026.csv"
+            download="india_climate_dataset_2026.csv"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium border bg-white shadow-xs transition-colors hover:bg-slate-50"
+            style={{ borderColor: '#E4E2DC', color: '#156272', fontFamily: "'DM Sans', sans-serif" }}
+          >
+            <span>Download Sample CSV</span>
+          </a>
+          <button
+            onClick={onUploadClick}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 shadow-sm"
+            style={{ backgroundColor: '#156272', color: '#fff', fontFamily: "'DM Sans', sans-serif" }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#1A7D8A'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#156272'; }}
+          >
+            <Plus size={16} strokeWidth={2.2} />
+            Upload Dataset
+          </button>
+        </div>
       </div>
 
       {/* Metrics Row */}

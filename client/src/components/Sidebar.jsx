@@ -61,7 +61,7 @@ export default function Sidebar({ activePage, onNavigate, onUploadClick }) {
       </div>
 
       {/* Primary Navigation */}
-      <nav className="flex-1 py-5 px-3 flex flex-col gap-1 overflow-y-auto">
+      <nav className="flex-1 py-5 px-3 flex flex-col gap-1 overflow-visible">
         {navItems.map(({ id, label, icon: Icon }) => {
           const active = activePage === id;
           return (

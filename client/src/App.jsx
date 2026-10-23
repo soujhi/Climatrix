@@ -130,7 +130,7 @@ function MainLayout() {
   return (
     <div className="flex h-screen overflow-hidden" style={{ backgroundColor: '#F5F4F1', fontFamily: "'Inter', sans-serif" }}>
       <Sidebar activePage={activePage} onNavigate={setActivePage} onUploadClick={() => setIsUploadOpen(true)} />
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto outline-none" style={{ scrollBehavior: 'smooth' }} tabIndex={0}>
         {renderPage()}
       </main>
 
