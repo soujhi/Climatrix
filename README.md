@@ -28,6 +28,8 @@ The user interface adheres to Apple Human Interface Guidelines and minimalist de
 
 ## Key Capabilities
 
+* **Climate Event Correlation Explorer**: Empirical pairwise investigation comparing two climate variables across exact overlapping observation dates with Pearson correlation coefficient calculation ($r \in [-1, 1]$), descriptive strength heuristic classification, bivariate scatter plotting, and synchronized dual-axis time-series visualization.
+* **Research Workspaces**: Collaborative project spaces organized around central scientific research questions. Workspaces support attaching dataset references without data duplication, persisting correlation analysis snapshots, recording dated research notes, linking external research outputs, and enforcing role-based permissions (Owner, Editor, Viewer).
 * **Manual User Authentication**: Secure JSON Web Token (JWT) based email and password registration and login without third-party OAuth dependencies.
 * **Stream-Based CSV Ingestion**: High-throughput file parsing with automated header extraction, missing value detection, data type casting, and spatial coordinate boundary validation (latitude [-90, 90], longitude [-180, 180]).
 * **Area and City Level Localized Analytics**: Dynamic spatial segmentation enabling users to drill down into specific municipalities or review nationwide aggregates.
@@ -102,16 +104,29 @@ Climatrix/
 │   │   └── db.js                        # MongoDB Mongoose connection manager
 │   ├── controllers/
 │   │   ├── authController.js            # User signup, login, and profile controllers
-│   │   └── datasetController.js         # Dataset upload, retrieval, analytics, and export
+│   │   ├── datasetController.js         # Dataset upload, retrieval, analytics, and export
+│   │   ├── analysisController.js        # Bivariate climate correlation computation
+│   │   └── workspaceController.js       # Workspace CRUD, membership, notes, and activity
 │   ├── middleware/
 │   │   ├── authMiddleware.js            # JWT verification and route protection
 │   │   └── uploadMiddleware.js          # Multer storage configuration
 │   ├── models/
 │   │   ├── User.js                      # User document schema and in-memory mock proxy
-│   │   └── Dataset.js                   # Dataset document schema and in-memory mock proxy
+│   │   ├── Dataset.js                   # Dataset document schema and in-memory mock proxy
+│   │   ├── ResearchWorkspace.js         # Collaborative workspace model with role policies
+│   │   ├── WorkspaceNote.js             # Dated researcher observation notes
+│   │   ├── SavedAnalysis.js             # Persisted correlation snapshots and chart states
+│   │   ├── WorkspaceActivity.js         # Audit log for workspace operations
+│   │   └── ResearchOutput.js            # Linked agency reports, findings, and papers
 │   ├── routes/
 │   │   ├── authRoutes.js                # Endpoints for /api/auth
-│   │   └── datasetRoutes.js             # Endpoints for /api/datasets
+│   │   ├── datasetRoutes.js             # Endpoints for /api/datasets
+│   │   ├── analysisRoutes.js            # Endpoints for /api/analyses
+│   │   └── workspaceRoutes.js           # Endpoints for /api/workspaces
+│   ├── services/
+│   │   └── correlationService.js        # Pearson math, pairwise-complete filter, zero-variance check
+│   ├── test/
+│   │   └── test_correlation_workspaces.js # Unit test suite with fixtures and permission tests
 │   ├── utils/
 │   │   ├── csvParser.js                 # Header extraction and validation routines
 │   │   └── statsEngine.js               # Mathematical aggregation engine
@@ -129,6 +144,8 @@ Climatrix/
     │   │   ├── Datasets.jsx             # Dataset records table, preview modal, export
     │   │   ├── Analytics.jsx            # City filter dropdown, statistics cards, Recharts
     │   │   ├── Geospatial.jsx           # Dedicated Mapbox interactive explorer
+    │   │   ├── CorrelationExplorer.jsx  # Feature 4: Empirical correlation builder & charts
+    │   │   ├── Workspaces.jsx           # Feature 5: Research workspace list & detail sections
     │   │   ├── UploadModal.jsx          # Drag-and-drop CSV modal with schema check
     │   │   └── MapboxHeatmap.jsx        # Mapbox GL JS lifecycle management and heatmap layers
     │   ├── context/
@@ -197,6 +214,33 @@ Climatrix/
 * `GET /api/datasets/:id/chart?parameter={metric}&location={city}`: Generate aggregated time-series or cross-location series for Recharts.
 * `GET /api/datasets/:id/geojson?parameter={metric}&location={city}`: Generate GeoJSON FeatureCollection formatted for Mapbox GL JS heatmap and point rendering.
 
+### Climate Correlation Explorer Endpoints (Feature 4)
+* `POST /api/analyses/correlation`: Validate Source A and Source B variables, execute exact-date and location alignment, filter non-finite pairs under pairwise-complete policy, verify minimum sample size and non-zero variance, and compute Pearson correlation coefficient ($r$), scatter dataset, and synchronized dual-axis time series.
+* `GET /api/analyses/:id`: Retrieve a saved correlation snapshot with verified workspace membership authorization.
+
+### Research Workspace Endpoints (Feature 5)
+* `GET /api/workspaces`: List all workspaces accessible to the authenticated user with filter support (`all`, `owned`, `shared`, `archived`) and aggregate counts.
+* `POST /api/workspaces`: Create a new research workspace with a mandatory title (3–100 chars) and central research question (10–500 chars).
+* `GET /api/workspaces/:id`: Fetch comprehensive workspace details including attached datasets, saved analyses, notes, linked outputs, activity logs, and current user role.
+* `PATCH /api/workspaces/:id`: Update workspace metadata (Owner/Editor).
+* `DELETE /api/workspaces/:id`: Permanently delete a workspace while preserving underlying datasets and external publications (Owner only).
+* `POST /api/workspaces/:id/archive`: Move workspace into read-only archived state (Owner only).
+* `POST /api/workspaces/:id/restore`: Restore an archived workspace to active collaborative status (Owner only).
+* `POST /api/workspaces/:id/datasets`: Attach an existing dataset reference without duplicating records (Owner/Editor).
+* `DELETE /api/workspaces/:id/datasets/:datasetId`: Detach dataset reference (Owner/Editor).
+* `GET /api/workspaces/:id/analyses`: Retrieve saved analysis snapshots in workspace.
+* `POST /api/workspaces/:id/analyses`: Persist an analysis configuration and result snapshot to workspace (Owner/Editor).
+* `DELETE /api/workspaces/:id/analyses/:analysisId`: Delete saved analysis snapshot (Owner/Editor).
+* `POST /api/workspaces/:id/notes`: Add a dated research observation note (Owner/Editor).
+* `PATCH /api/workspaces/:id/notes/:noteId`: Update note content (Owner/Editor/Author).
+* `DELETE /api/workspaces/:id/notes/:noteId`: Delete note (Owner/Editor/Author).
+* `POST /api/workspaces/:id/outputs`: Link an external research paper, technical report, or published finding (Owner/Editor).
+* `DELETE /api/workspaces/:id/outputs/:outputId`: Unlink research output (Owner/Editor).
+* `POST /api/workspaces/:id/members`: Invite a registered researcher and assign Editor or Viewer role (Owner only).
+* `PATCH /api/workspaces/:id/members/:memberUserId`: Update collaborator role (Owner only).
+* `DELETE /api/workspaces/:id/members/:memberUserId`: Remove collaborator from workspace (Owner only).
+* `GET /api/workspaces/users/search?q={query}`: Search registered researchers by name or email for collaborator invitation.
+
 ---
 
 ## Installation and Setup
@@ -246,6 +290,12 @@ Start the frontend development server:
 npm run dev
 ```
 Open `http://localhost:5173` in a web browser.
+
+### 4. Run Automated Test Suite
+To verify the Pearson correlation calculation fixtures, edge cases (zero variance, insufficient samples, missing value exclusion), and role-based workspace permissions:
+```bash
+node server/test/test_correlation_workspaces.js
+```
 
 ---
 
