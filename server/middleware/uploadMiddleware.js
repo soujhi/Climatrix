@@ -1,13 +1,23 @@
 import path from 'path';
 import multer from 'multer';
+import os from 'os';
+import fs from 'fs';
 
 /**
  * MULTER FILE UPLOAD MIDDLEWARE
  * Handles single CSV file uploads, validates file extension and size (10MB max).
+ * Uses os.tmpdir() on Vercel serverless and local 'uploads/' on standard node.
  */
+const uploadDir = process.env.VERCEL ? os.tmpdir() : 'uploads/';
+if (!fs.existsSync(uploadDir)) {
+  try {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  } catch (e) {}
+}
+
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, 'uploads/');
+    cb(null, uploadDir);
   },
   filename(req, file, cb) {
     cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);

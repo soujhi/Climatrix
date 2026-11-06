@@ -43,7 +43,12 @@ const createDatasetRecords = (stations, dateCount = 10, startDate = '2026-01-01'
 const seedDefaultDatasets = () => {
   try {
     // 1. All-India Climate Survey 2026 (From CSV or fallback generator)
-    const csvPath = path.resolve(__dirname, '../../sample_data/india_climate_dataset_2026.csv');
+    const candidatePaths = [
+      path.resolve(__dirname, '../../sample_data/india_climate_dataset_2026.csv'),
+      path.resolve(process.cwd(), 'sample_data/india_climate_dataset_2026.csv'),
+      path.resolve(process.cwd(), 'client/public/india_climate_dataset_2026.csv'),
+    ];
+    const csvPath = candidatePaths.find((p) => fs.existsSync(p));
     let allIndiaRecords = [];
     let allIndiaHeaders = ['date', 'location', 'latitude', 'longitude', 'temperature', 'rainfall', 'humidity', 'wind_speed'];
     let allIndiaLocations = [];

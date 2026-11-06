@@ -6,13 +6,15 @@ server/node_modules/
 # Production Builds
 client/dist/
 dist/
+.vercel
 
 # Environment Variables & Secrets
 .env
-.env.local
-.env.*.local
+.env.*
 client/.env
+client/.env.*
 server/.env
+server/.env.*
 *.local
 
 # Logs

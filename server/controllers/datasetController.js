@@ -1,3 +1,4 @@
+import path from 'path';
 import fs from 'fs';
 import Dataset from '../models/Dataset.js';
 import { parseAndValidateCSV } from '../utils/csvParser.js';
@@ -423,7 +424,12 @@ export const downloadDatasetCSV = async (req, res) => {
 // @access  Public
 export const downloadSampleCSV = async (req, res) => {
   try {
-    const csvPath = './sample_data/india_climate_dataset_2026.csv';
+    const candidatePaths = [
+      './sample_data/india_climate_dataset_2026.csv',
+      path.resolve(process.cwd(), 'sample_data/india_climate_dataset_2026.csv'),
+      path.resolve(process.cwd(), 'client/public/india_climate_dataset_2026.csv'),
+    ];
+    const csvPath = candidatePaths.find((p) => fs.existsSync(p));
     if (fs.existsSync(csvPath)) {
       res.setHeader('Content-Type', 'text/csv');
       res.setHeader('Content-Disposition', 'attachment; filename="climatrix_india_climate_sample.csv"');
